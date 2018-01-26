@@ -16,9 +16,8 @@ import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.widget.EditText
 import com.google.firebase.auth.FirebaseAuth
-
-
-
+import de.graw.android.grawapp.dataBase.DbHelper
+import de.graw.android.grawapp.dataBase.TableHelper
 
 
 class MainActivity : AppCompatActivity() {
@@ -56,7 +55,11 @@ class MainActivity : AppCompatActivity() {
         signInButton!!.setOnClickListener {
             val intent = Intent(this,SignInActivity::class.java)
             startActivity(intent)
+
+
         }
+
+
 
     }
 
@@ -73,6 +76,12 @@ class MainActivity : AppCompatActivity() {
                         Log.i("test", "signInWithEmail:success")
                         val user = mAuth!!.getCurrentUser()
                         Log.i("test","user succesfully logged in: ${user!!.email}")
+                        val userItem = UserItem(0,user!!.email.toString(),"12345")
+                        val tableHelper = TableHelper(this)
+                        val id = tableHelper.saveUser(userItem)
+                        if(id != null) {
+                            Log.i("test", "User added successfully")
+                        }
                         val intent = Intent(this,MainApplicationActivity::class.java)
                         startActivity(intent)
                         //updateUI(user)
