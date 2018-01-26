@@ -1,0 +1,164 @@
+{
+  "project_info": {
+    "project_number": "77240329945",
+    "firebase_url": "https://grawapp.firebaseio.com",
+    "project_id": "grawapp",
+    "storage_bucket": "grawapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77240329945:android:e4272b89ff7328b8",
+        "android_client_info": {
+          "package_name": "com.graw.grawapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77240329945-7h7530h9f46t1tr44l4uhm2kcimpqfqe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.graw.grawapp",
+            "certificate_hash": "1bfc96c788a04d78f07560032405829ba63412e9"
+          }
+        },
+        {
+          "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOKFc94MAMoiJGMhx7Vig2gZjvtL4gSv0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77240329945-9ort2dflrv7gso5idgldmfupvu67ceb9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "de.graw.GrawApp"
+              }
+            },
+            {
+              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77240329945:android:5aabc0702dbde2cb",
+        "android_client_info": {
+          "package_name": "com.graw.test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77240329945-6g0bfcc446044bf1ia6t0q5qulput6k1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.graw.test",
+            "certificate_hash": "1bfc96c788a04d78f07560032405829ba63412e9"
+          }
+        },
+        {
+          "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOKFc94MAMoiJGMhx7Vig2gZjvtL4gSv0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77240329945-9ort2dflrv7gso5idgldmfupvu67ceb9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "de.graw.GrawApp"
+              }
+            },
+            {
+              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:77240329945:android:847c542948701097",
+        "android_client_info": {
+          "package_name": "de.graw.android.grawapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "77240329945-pa4q669u9e783nofs09bfkhplqcu3sr8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.graw.android.grawapp",
+            "certificate_hash": "44b0340bcf0a4339224d65c961ba1a578182346a"
+          }
+        },
+        {
+          "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOKFc94MAMoiJGMhx7Vig2gZjvtL4gSv0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "77240329945-9ort2dflrv7gso5idgldmfupvu67ceb9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "de.graw.GrawApp"
+              }
+            },
+            {
+              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

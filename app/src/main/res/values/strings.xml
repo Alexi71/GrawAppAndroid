@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">GrawAPP</string>
+    <string name="enter_you_email">enter you email</string>
+    <string name="enter_your_password">enter your password</string>
+    <string name="button_login">Login</string>
+    <string name="button_or_sign_in">or sign in</string>
+    <string name="sign_in">Sign in</string>
+    <string name="title_activity_main_application">MainApplicationActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
