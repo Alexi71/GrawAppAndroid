@@ -79,6 +79,8 @@ class MainActivity : AppCompatActivity() {
                         val userItem = UserItem(0,user!!.email.toString(),"12345")
                         val tableHelper = TableHelper(this)
                         val id = tableHelper.saveUser(userItem)
+
+                        
                         if(id != null) {
                             Log.i("test", "User added successfully")
                         }
