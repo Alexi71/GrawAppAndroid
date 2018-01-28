@@ -15,6 +15,10 @@ import android.content.SharedPreferences
 import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.widget.EditText
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import de.graw.android.grawapp.dataBase.DbHelper
 import de.graw.android.grawapp.dataBase.TableHelper
@@ -32,7 +36,14 @@ class MainActivity : AppCompatActivity() {
     var textEmail:EditText? = null
     var textPassword:EditText? = null
 
+    var googleSingInButton:SignInButton? = null
+
     private var mAuth: FirebaseAuth? = null
+
+    var googleApiClient: GoogleApiClient? = null
+    val TAG = "CreateAccount"
+
+    val GOOGLE_LOG_IN_RC = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         textEmail = findViewById<EditText>(R.id.editTextEmail)
         textPassword = findViewById<EditText>(R.id.editTextPassword)
         loginButton = findViewById<Button>(R.id.buttonLogin)
+        googleSingInButton = findViewById(R.id.google_sign_in_button)
+
         loginButton!!.setOnClickListener { setLoginClick() }
         val username = prefs!!.getString(PREF_USERNAME,"")
         val password = prefs!!.getString(PREF_PASSWORD,"")
@@ -59,9 +72,49 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        googleSingInButton!!.setOnClickListener {
+            googleLogin()
+        }
+        // Configure Google Sign In
+        val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.request_client_id))
+                .requestEmail()
+                .build()
 
+        googleApiClient = GoogleApiClient.Builder(this)
+                .enableAutoManage(this){}
+                .addApi(Auth.GOOGLE_SIGN_IN_API,googleSignInOptions)
+                .build()
 
     }
+
+    private fun googleLogin() {
+        Log.i(TAG, "Starting Google LogIn Flow.")
+        val signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient)
+        startActivityForResult(signInIntent, GOOGLE_LOG_IN_RC)
+    }
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.i(TAG, "Got Result code ${requestCode}.")
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == GOOGLE_LOG_IN_RC) {
+            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            Log.i(TAG, "With Google LogIn, is result a success? ${result.isSuccess}.")
+            /*if (result.isSuccess) {
+                // Google Sign In was successful, authenticate with Firebase
+                firebaseAuthWithGoogle(result.signInAccount!!)
+            } else {
+                Toast.makeText(this@CreateAccount, "Some error occurred.", Toast.LENGTH_SHORT).show()
+            }*/
+        }
+    }
+
+    // Creating and Configuring Google Api Client.
+   /* googleApiClient = GoogleApiClient.Builder(this@CreateAccount)
+    .enableAutoManage(this@CreateAccount  /* OnConnectionFailedListener */) { }
+    .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+    .build()*/
 
     fun setLoginClick() {
         mAuth!!.signInWithEmailAndPassword(textEmail!!.text.toString(),
@@ -76,11 +129,12 @@ class MainActivity : AppCompatActivity() {
                         Log.i("test", "signInWithEmail:success")
                         val user = mAuth!!.getCurrentUser()
                         Log.i("test","user succesfully logged in: ${user!!.email}")
-                        val userItem = UserItem(0,user!!.email.toString(),"12345")
+                        val userItem = UserItem(0,user!!.email.toString(),user.uid)
+                        Log.i("test",user.uid)
                         val tableHelper = TableHelper(this)
                         val id = tableHelper.saveUser(userItem)
 
-                        
+
                         if(id != null) {
                             Log.i("test", "User added successfully")
                         }

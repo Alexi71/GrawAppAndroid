@@ -16,17 +16,20 @@ class TableHelper(context: Context){
         var content = ContentValues()
         content.put(databaseValues.NAME_COLUMN,user.name)
         content.put(databaseValues.KEY_COLUMN,user.key)
-        db.beginTransaction()
-        val id:Long = try {
-            val id = db.insert(databaseValues.USER_TABLE,null,content)
-            db.setTransactionSuccessful()
-            id
+        val userId = getUserId(user)
+        if(userId == null) {
+            db.beginTransaction()
+            val id: Long = try {
+                val id = db.insert(databaseValues.USER_TABLE, null, content)
+                db.setTransactionSuccessful()
+                id
+            } finally {
+                db.endTransaction()
+                db.close()
+            }
+            return id
         }
-        finally {
-            db.endTransaction()
-            db.close()
-        }
-        return id
+        return userId.toLong()
     }
 
     fun saveStation(item:StationItem) :Long{
@@ -115,7 +118,7 @@ class TableHelper(context: Context){
         val db = helper.readableDatabase
         var cursor:Cursor? = null
         try {
-            cursor = db.rawQuery("select _id from user where key_value = ${user.key}",null)
+            cursor = db.rawQuery("select _id from user where key_value = '${user.key}'",null)
         }
         catch (e:Exception) {
             e.printStackTrace()
