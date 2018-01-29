@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import de.graw.android.grawapp.dataBase.TableHelper
 import org.greenrobot.eventbus.EventBus
 
 
@@ -80,6 +81,8 @@ class StationListFragment : Fragment() {
                 if(data!!.exists()) {
                     val children = data.children
                     stationList.clear()
+                    val tableHelper = TableHelper(context)
+
                     children.forEach {
                         var station = StationItem()
                         Log.i("test",it.key)
@@ -91,6 +94,12 @@ class StationListFragment : Fragment() {
                         station.longitude = map.get("Longitude") as String
                         station.altitude = map.get("Altitude") as String
                         station.name = map.get("Name") as String
+                        try {
+                            tableHelper.saveStation(station)
+                        }
+                        catch (e:Exception) {
+                            Log.i("test",e.localizedMessage)
+                        }
                         stationList.add(station)
                         adapter?.notifyDataSetChanged()
                         //Log.i("test","map")

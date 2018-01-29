@@ -32,28 +32,35 @@ class TableHelper(context: Context){
         return userId.toLong()
     }
 
-    fun saveStation(item:StationItem) :Long{
+    fun saveStation(item:StationItem) :Long {
         val db = helper.writableDatabase
         var content = ContentValues()
-        content.put(databaseValues.NAME_COLUMN,item.name)
-        content.put(databaseValues.KEY_COLUMN,item.key)
-        content.put(databaseValues.CITY_COLUMN,item.city)
-        content.put(databaseValues.COUNTRY_COLUMN,item.country)
-        content.put(databaseValues.LONGITUDE_COLUMN,item.longitude)
-        content.put(databaseValues.LATITUDE_COLUMN,item.latitude)
-        content.put(databaseValues.ALTITUDE_COLUMN,item.altitude)
-        content.put(databaseValues.STATION_ID_COLUMN,item.id)
+        content.put(databaseValues.NAME_COLUMN, item.name)
+        content.put(databaseValues.KEY_COLUMN, item.key)
+        content.put(databaseValues.CITY_COLUMN, item.city)
+        content.put(databaseValues.COUNTRY_COLUMN, item.country)
+        content.put(databaseValues.LONGITUDE_COLUMN, item.longitude)
+        content.put(databaseValues.LATITUDE_COLUMN, item.latitude)
+        content.put(databaseValues.ALTITUDE_COLUMN, item.altitude)
+        content.put(databaseValues.STATION_ID_COLUMN, item.id)
+        val stationId = getStationId(item)
+
+        if (stationId != null) {
+            return stationId.toLong()
+        }
+
         db.beginTransaction()
-        val id:Long = try {
-            val id = db.insert(databaseValues.STATION_TABLE,null,content)
+        val id: Long = try {
+            val id = db.insert(databaseValues.STATION_TABLE, null, content)
             db.setTransactionSuccessful()
             id
-        }
-        finally {
+        } finally {
             db.endTransaction()
             db.close()
+            Log.i("test","station ${item.name} successfully added to db")
         }
         return id
+
     }
 
     fun setDefaultStation(user:UserItem, station:StationItem) :Long? {
@@ -62,7 +69,7 @@ class TableHelper(context: Context){
         val userId = getUserId(user)
         val stationId = getStationId(station)
         if(userId != null && stationId != null){
-            val cursor = db.rawQuery("select * from user_station where user._id = ${userId} and station._id = ${stationId}",null)
+            val cursor = db.rawQuery("select * from user_station where user_id = ${userId} and station_id = ${stationId}",null)
             val count = cursor.count
             if(count > 0 ) {
                 //Update station first set all user station as not default
@@ -71,7 +78,7 @@ class TableHelper(context: Context){
                    cursor.moveToFirst()
                    cursor.close()
 
-                   cursor = db.rawQuery("UPDATE ${databaseValues.USER_STATION_TABLE} set ${databaseValues.IS_DEFAULT_COLUMN} = 0 where user_id = ${userId} and station_id = ${stationId}",null)
+                   cursor = db.rawQuery("UPDATE ${databaseValues.USER_STATION_TABLE} set ${databaseValues.IS_DEFAULT_COLUMN} = 0 where user_id = '${userId}' and station_id = '${stationId}'",null)
                    cursor.moveToFirst()
                    cursor.close()
                    val id = getUserStationId(userId,stationId)
@@ -136,7 +143,7 @@ class TableHelper(context: Context){
         val db = helper.readableDatabase
         var cursor:Cursor? = null
         try {
-             cursor = db.rawQuery("select _id from station where key_value = ${station.key}",null)
+             cursor = db.rawQuery("select _id from station where key_value = '${station.key}'",null)
         }
         catch (e:Exception) {
             e.printStackTrace()
@@ -168,8 +175,57 @@ class TableHelper(context: Context){
         return null
     }
 
-    fun checkDefaultStation(userId:Int, stationId:Int){
+    fun getDefaultStation(user:UserItem):StationItem?{
+        val db = helper.readableDatabase
+        var cursor:Cursor? = null
+        try {
+            val uid = getUserId(user)
+            if(uid != null) {
+                cursor = db.rawQuery("select * from ${databaseValues.USER_STATION_TABLE} where ${databaseValues.USER_STATION_USER_ID} = '${uid}' and ${databaseValues.IS_DEFAULT_COLUMN} = 1",null)
+            }
+            else {
+                Log.i("test","No user found for default station")
+                return  null
+            }
 
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
+
+        if(cursor!!.count > 0) {
+            cursor!!.moveToFirst()
+            val id = cursor!!.getInt(cursor!!.getColumnIndex(databaseValues.STATION_ID_COLUMN))
+            val item = getStation(id)
+            return item
+        }
+        return null
+    }
+
+    fun getStation(id:Int):StationItem? {
+        val db = helper.readableDatabase
+        var cursor:Cursor? = null
+        try {
+            cursor = db.rawQuery("select * from ${databaseValues.STATION_TABLE} where ${databaseValues.ID_COLUMN} = '${id}' ",null)
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
+
+        if(cursor!!.count > 0) {
+            cursor!!.moveToFirst()
+            val stationId = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.STATION_ID_COLUMN))
+            val name = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.NAME_COLUMN))
+            val city = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.CITY_COLUMN))
+            val country = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.COUNTRY_COLUMN))
+            val keyValue = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.KEY_COLUMN))
+            val altitude = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.ALTITUDE_COLUMN))
+            val lon = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.LONGITUDE_COLUMN))
+            val lat = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.LATITUDE_COLUMN))
+            val item = StationItem(stationId,name,city,country,lon,lat,altitude,keyValue)
+            return item
+        }
+        return null
     }
 
 }

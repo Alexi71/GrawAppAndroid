@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import de.graw.android.grawapp.dataBase.TableHelper
 import kotlinx.android.synthetic.main.activity_main_application.*
 import kotlinx.android.synthetic.main.app_bar_main_application.*
 import org.greenrobot.eventbus.EventBus
@@ -19,7 +20,7 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
     val fragmentManager = supportFragmentManager
     val stationListFragment = StationListFragment()
     val stationFlightFragment = StationFlightFragment()
-
+    var userItem:UserItem? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_application)
@@ -34,16 +35,44 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
 
         nav_view.setNavigationItemSelectedListener(this)
 
-        val transAction = fragmentManager.beginTransaction()
-        transAction.replace(R.id.contentArea,stationListFragment)
-                .addToBackStack(null)
-                .commit()
-        setTitle("Select Station")
+        val email = intent.getStringExtra("email")
+        val userId = intent.getStringExtra("userid")
+        userItem = UserItem(0,email,userId)
+
+        //get default station....
+        val helper = TableHelper(this)
+        val defaultStation = helper.getDefaultStation(userItem!!)
+
+        if(defaultStation != null ) {
+            openFlightFragment(defaultStation)
+        }
+        else {
+            val transAction = fragmentManager.beginTransaction()
+            transAction.replace(R.id.contentArea, stationListFragment)
+                    .addToBackStack(null)
+                    .commit()
+            setTitle("Select Station")
+        }
     }
 
     @Subscribe
     fun onRowClicked(item:StationItem) {
         Log.i("test","row clicked ${item.name}")
+
+        try {
+            val helper = TableHelper(this)
+            helper.setDefaultStation(userItem!!,item)
+        }
+        catch (e:Exception) {
+            Log.i("test","could not set default station")
+        }
+
+        openFlightFragment(item)
+
+        //Toast.makeText(context,"Position clicked ${position}",Toast.LENGTH_LONG).show()
+    }
+
+    private fun openFlightFragment(item:StationItem) {
         val bundle = Bundle()
         bundle.putSerializable("stationItem",item)
 
@@ -53,7 +82,6 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
                 .addToBackStack(null)
                 .commit()
         setTitle("Flight Data")
-        //Toast.makeText(context,"Position clicked ${position}",Toast.LENGTH_LONG).show()
     }
 
 

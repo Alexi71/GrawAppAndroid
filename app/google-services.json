@@ -117,6 +117,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "77240329945-27cmg7l6lsns2kh81hpi0pd7iecvb1ct.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.graw.android.grawapp",
+            "certificate_hash": "a0d9a9979bfb7f0896da88badf079b0414dc246b"
+          }
+        },
+        {
+          "client_id": "77240329945-rl6n1vbh6u6kliu3jkresnga43mud4ga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.graw.android.grawapp",
+            "certificate_hash": "c0ee6b4b5b44736a85d3080f9b9da3dd2a0c4c91"
+          }
+        },
+        {
           "client_id": "77240329945-pa4q669u9e783nofs09bfkhplqcu3sr8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
