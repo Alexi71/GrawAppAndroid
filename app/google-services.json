@@ -40,15 +40,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
+              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
               "client_id": "77240329945-9ort2dflrv7gso5idgldmfupvu67ceb9.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "de.graw.GrawApp"
               }
-            },
-            {
-              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
-              "client_type": 3
             }
           ]
         },
@@ -91,15 +91,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
+              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
               "client_id": "77240329945-9ort2dflrv7gso5idgldmfupvu67ceb9.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "de.graw.GrawApp"
               }
-            },
-            {
-              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
-              "client_type": 3
             }
           ]
         },
@@ -116,6 +116,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "77240329945-rl6n1vbh6u6kliu3jkresnga43mud4ga.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "de.graw.android.grawapp",
+            "certificate_hash": "c0ee6b4b5b44736a85d3080f9b9da3dd2a0c4c91"
+          }
+        },
         {
           "client_id": "77240329945-pa4q669u9e783nofs09bfkhplqcu3sr8.apps.googleusercontent.com",
           "client_type": 1,
@@ -142,15 +150,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
+              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
               "client_id": "77240329945-9ort2dflrv7gso5idgldmfupvu67ceb9.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "de.graw.GrawApp"
               }
-            },
-            {
-              "client_id": "77240329945-9nun2iv4tdojv0r3p4kvlng6a27r4cbc.apps.googleusercontent.com",
-              "client_type": 3
             }
           ]
         },

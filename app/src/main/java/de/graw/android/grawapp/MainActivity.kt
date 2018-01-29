@@ -16,10 +16,12 @@ import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.widget.EditText
 import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import de.graw.android.grawapp.dataBase.DbHelper
 import de.graw.android.grawapp.dataBase.TableHelper
 
@@ -96,17 +98,34 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.i(TAG, "Got Result code ${requestCode}.")
+        Log.i("test", "Got Result code ${requestCode}.")
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == GOOGLE_LOG_IN_RC) {
             val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             Log.i(TAG, "With Google LogIn, is result a success? ${result.isSuccess}.")
-            /*if (result.isSuccess) {
+            if (result.isSuccess) {
                 // Google Sign In was successful, authenticate with Firebase
                 firebaseAuthWithGoogle(result.signInAccount!!)
             } else {
-                Toast.makeText(this@CreateAccount, "Some error occurred.", Toast.LENGTH_SHORT).show()
-            }*/
+                Toast.makeText(this, "Some error occurred.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
+        Log.i(TAG, "Authenticating user with firebase.")
+        val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
+        mAuth?.signInWithCredential(credential)?.addOnCompleteListener(this) { task ->
+            Log.i(TAG, "Firebase Authentication, is result a success? ${task.isSuccessful}.")
+            if (task.isSuccessful) {
+                // Sign in success, update UI with the signed-in user's information
+                Log.i("test","google user ${mAuth!!.currentUser!!.uid}")
+                val intent = Intent(this,MainApplicationActivity::class.java)
+                startActivity(intent)
+            } else {
+                // If sign in fails, display a message to the user.
+                Log.e(TAG, "Authenticating with Google credentials in firebase FAILED !!")
+            }
         }
     }
 
