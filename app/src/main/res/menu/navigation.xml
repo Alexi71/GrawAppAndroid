@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@drawable/ic_menu_camera"
+        android:title="@string/charts" />
+    <item
+        android:icon="@drawable/ic_place_black_24dp"
+        android:title="@string/flight_path" />
+    <item
+        android:icon="@drawable/ic_menu_camera"
+        android:title="@string/messages" />
+</menu>

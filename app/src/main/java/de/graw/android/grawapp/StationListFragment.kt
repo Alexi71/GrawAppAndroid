@@ -11,12 +11,12 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import de.graw.android.grawapp.dataBase.TableHelper
+import de.graw.android.grawapp.model.StationItem
 import org.greenrobot.eventbus.EventBus
 
 
@@ -70,12 +70,12 @@ class StationListFragment : Fragment() {
     }
 
     fun getData() {
-        val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference("/station")
-        val listener = object :ValueEventListener {
-            override fun onCancelled(p0: DatabaseError?) {
+                val database = FirebaseDatabase.getInstance()
+                val ref = database.getReference("/station")
+                val listener = object :ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError?) {
 
-            }
+                    }
 
             override fun onDataChange(data: DataSnapshot?) {
                 if(data!!.exists()) {

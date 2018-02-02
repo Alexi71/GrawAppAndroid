@@ -4,15 +4,10 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.AuthResult
-import com.google.android.gms.tasks.Task
-import android.support.annotation.NonNull
 import com.google.android.gms.tasks.OnCompleteListener
-import android.R.attr.password
 import android.content.Intent
 import android.content.SharedPreferences
-import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.widget.EditText
 import com.google.android.gms.auth.api.Auth
@@ -22,8 +17,8 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import de.graw.android.grawapp.dataBase.DbHelper
 import de.graw.android.grawapp.dataBase.TableHelper
+import de.graw.android.grawapp.model.UserItem
 
 
 class MainActivity : AppCompatActivity() {
@@ -177,7 +172,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun saveUser(email:String,userId:String) {
-        val userItem = UserItem(0,email,userId)
+        val userItem = UserItem(0, email, userId)
         //Log.i("test",user.uid)
         val tableHelper = TableHelper(this)
         val id = tableHelper.saveUser(userItem)

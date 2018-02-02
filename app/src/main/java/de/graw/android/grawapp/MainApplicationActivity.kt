@@ -1,7 +1,6 @@
 package de.graw.android.grawapp
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -14,17 +13,22 @@ import kotlinx.android.synthetic.main.activity_main_application.*
 import kotlinx.android.synthetic.main.app_bar_main_application.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import de.graw.android.grawapp.model.StationItem
+import de.graw.android.grawapp.model.UserItem
+
 
 class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     val fragmentManager = supportFragmentManager
     val stationListFragment = StationListFragment()
     val stationFlightFragment = StationFlightFragment()
-    var userItem:UserItem? = null
+    var userItem: UserItem? = null
+    var navigationView:NavigationView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_application)
         setSupportActionBar(toolbar)
+        navigationView = findViewById(R.id.nav_view)
 
 
 
@@ -37,11 +41,12 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
 
         val email = intent.getStringExtra("email")
         val userId = intent.getStringExtra("userid")
-        userItem = UserItem(0,email,userId)
+        userItem = UserItem(0, email, userId)
 
         //get default station....
         val helper = TableHelper(this)
         val defaultStation = helper.getDefaultStation(userItem!!)
+        addMenuItems()
 
         if(defaultStation != null ) {
             openFlightFragment(defaultStation)
@@ -55,8 +60,46 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
         }
     }
 
+    fun addMenuItems () {
+        var menu = navigationView!!.menu
+        var menuGroup = menu.addSubMenu("My Stations")
+
+        var helper = TableHelper(this)
+        var stationList = helper.getUserSubscribedStation(userItem!!)
+
+        stationList.forEach{
+            var item = menuGroup.add(0,1,1,it.name).setIcon(R.drawable.ic_place_black_24dp)
+            item.setOnMenuItemClickListener(MenuItem.OnMenuItemClickListener {menuItem ->
+                onMenuItemClick(menuItem)
+                true
+            })
+
+
+        }
+
+      /*  var item = menuGroup.add(0,1,1,"Test1").setIcon(R.drawable.ic_place_black_24dp)
+        item.setOnMenuItemClickListener(MenuItem.OnMenuItemClickListener {menuItem ->
+            onMenuItemClick(menuItem)
+            true
+        })
+
+        menuGroup.add(1,2,1,"Test2").setOnMenuItemClickListener(MenuItem.OnMenuItemClickListener {menuItem ->
+            onMenuItemClick(menuItem)
+            true
+        })*/
+    }
+
+    fun onMenuItemClick(item: MenuItem): Boolean {
+        Log.i("test","${item.itemId}")
+        if (item.title == "hindi") {
+            //do something
+        }
+        drawer_layout.closeDrawer(GravityCompat.START)
+        return true
+    }
+
     @Subscribe
-    fun onRowClicked(item:StationItem) {
+    fun onRowClicked(item: StationItem) {
         Log.i("test","row clicked ${item.name}")
 
         try {
@@ -72,14 +115,14 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
         //Toast.makeText(context,"Position clicked ${position}",Toast.LENGTH_LONG).show()
     }
 
-    private fun openFlightFragment(item:StationItem) {
+    private fun openFlightFragment(item: StationItem) {
         val bundle = Bundle()
         bundle.putSerializable("stationItem",item)
 
         stationFlightFragment!!.arguments = bundle
         val transAction = fragmentManager.beginTransaction()
         transAction.replace(R.id.contentArea,stationFlightFragment)
-                .addToBackStack(null)
+                //.addToBackStack(null)
                 .commit()
         setTitle("Flight Data")
     }
@@ -149,4 +192,55 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
+
+   /* fun getData() {
+        val database = FirebaseDatabase.getInstance()
+        val ref = database.getReference("/station")
+        val listener = object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError?) {
+
+            }
+
+            override fun onDataChange(data: DataSnapshot?) {
+                if(data!!.exists()) {
+                    val children = data.children
+                    stationList.clear()
+                    val tableHelper = TableHelper(context)
+
+                    children.forEach {
+                        var station = StationItem()
+                        Log.i("test",it.key)
+                        val map = it.getValue() as Map<String, Any>
+                        station.key = it.key
+                        station.city = map.get("City") as String
+                        station.country = map.get("Country") as String
+                        station.latitude = map.get("Latitude") as String
+                        station.longitude = map.get("Longitude") as String
+                        station.altitude = map.get("Altitude") as String
+                        station.name = map.get("Name") as String
+                        try {
+                            tableHelper.saveStation(station)
+                        }
+                        catch (e:Exception) {
+                            Log.i("test",e.localizedMessage)
+                        }
+                        stationList.add(station)
+                        adapter?.notifyDataSetChanged()
+                        //Log.i("test","map")
+                    }
+
+                    /* for(i in data.children) {
+                         val key = i.child("key").value as String
+                         Log.i("test","key: ${key}")
+
+                        /* val item = i.getValue<StationItem>(StationItem::class.java)
+                         Log.i("test","received from db ${item!!.city}")*/
+ 12
+                     }*/
+                }
+            }
+
+        }
+        ref.addValueEventListener(listener)
+    }*/
 }

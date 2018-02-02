@@ -21,10 +21,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    repositories {
+        mavenCentral()
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -34,12 +41,19 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:11.0.4'
     implementation 'com.google.firebase:firebase-database:11.0.4'
     implementation 'com.google.android.gms:play-services-auth:11.0.4'
+    implementation 'com.google.firebase:firebase-storage:11.0.4'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     kapt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
-
+    compile "org.jetbrains.anko:anko-common:$anko_version"
+    compile "org.jetbrains.anko:anko-sqlite:$anko_version"
+    compile "org.jetbrains.anko:anko-coroutines:$anko_version"
+    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation project(':dxcharts-release')
+    compile(name: 'Syncfusion.SfChart.Android', ext: 'aar')
+    compile(name: 'Syncfusion.SfBusyIndicator.Android', ext: 'aar')
 }
 
 kapt {

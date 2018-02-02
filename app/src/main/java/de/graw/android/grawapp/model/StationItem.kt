@@ -1,4 +1,4 @@
-package de.graw.android.grawapp
+package de.graw.android.grawapp.model
 
 import java.io.Serializable
 

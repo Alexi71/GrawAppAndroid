@@ -1,4 +1,6 @@
-package de.graw.android.grawapp
+package de.graw.android.grawapp.model
+
+import java.io.Serializable
 
 data class FlightData (
     var key:String,
@@ -8,7 +10,7 @@ data class FlightData (
     var url:String ,
     var url100:String ,
     var urlEnd:String,
-    var isRealTimeData:Boolean)
+    var isRealTimeData:Boolean):Serializable
 {
     constructor():this("","","","","","","",false)
 }

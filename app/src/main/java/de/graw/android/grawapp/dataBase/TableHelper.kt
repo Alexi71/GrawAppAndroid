@@ -4,14 +4,15 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.util.Log
-import de.graw.android.grawapp.StationItem
-import de.graw.android.grawapp.UserItem
+import de.graw.android.grawapp.model.StationItem
+import de.graw.android.grawapp.model.UserItem
+import java.util.ArrayList
 
 class TableHelper(context: Context){
 
     private val helper = DbHelper(context)
 
-    fun saveUser(user:UserItem):Long {
+    fun saveUser(user: UserItem):Long {
         val db = helper.writableDatabase
         var content = ContentValues()
         content.put(databaseValues.NAME_COLUMN,user.name)
@@ -32,7 +33,7 @@ class TableHelper(context: Context){
         return userId.toLong()
     }
 
-    fun saveStation(item:StationItem) :Long {
+    fun saveStation(item: StationItem) :Long {
         val db = helper.writableDatabase
         var content = ContentValues()
         content.put(databaseValues.NAME_COLUMN, item.name)
@@ -63,7 +64,7 @@ class TableHelper(context: Context){
 
     }
 
-    fun setDefaultStation(user:UserItem, station:StationItem) :Long? {
+    fun setDefaultStation(user: UserItem, station: StationItem) :Long? {
         val db = helper.writableDatabase
 
         val userId = getUserId(user)
@@ -121,7 +122,7 @@ class TableHelper(context: Context){
         return id
     }
 
-    fun getUserId(user:UserItem) :Int?{
+    fun getUserId(user: UserItem) :Int?{
         val db = helper.readableDatabase
         var cursor:Cursor? = null
         try {
@@ -139,7 +140,7 @@ class TableHelper(context: Context){
       return null
     }
 
-    fun getStationId(station:StationItem) :Int?{
+    fun getStationId(station: StationItem) :Int?{
         val db = helper.readableDatabase
         var cursor:Cursor? = null
         try {
@@ -175,13 +176,13 @@ class TableHelper(context: Context){
         return null
     }
 
-    fun getDefaultStation(user:UserItem):StationItem?{
+    fun getDefaultStation(user: UserItem): StationItem?{
         val db = helper.readableDatabase
         var cursor:Cursor? = null
         try {
             val uid = getUserId(user)
             if(uid != null) {
-                cursor = db.rawQuery("select * from ${databaseValues.USER_STATION_TABLE} where ${databaseValues.USER_STATION_USER_ID} = '${uid}' and ${databaseValues.IS_DEFAULT_COLUMN} = 1",null)
+                cursor = db.rawQuery("select * from ${databaseValues.USER_STATION_TABLE} where ${databaseValues.USER_STATION_USER_ID} = ${uid} and ${databaseValues.IS_DEFAULT_COLUMN} = 1",null)
             }
             else {
                 Log.i("test","No user found for default station")
@@ -195,14 +196,14 @@ class TableHelper(context: Context){
 
         if(cursor!!.count > 0) {
             cursor!!.moveToFirst()
-            val id = cursor!!.getInt(cursor!!.getColumnIndex(databaseValues.STATION_ID_COLUMN))
+            val id = cursor!!.getInt(cursor!!.getColumnIndex(databaseValues.USER_STATION_STATION_ID))
             val item = getStation(id)
             return item
         }
         return null
     }
 
-    fun getStation(id:Int):StationItem? {
+    fun getStation(id:Int): StationItem? {
         val db = helper.readableDatabase
         var cursor:Cursor? = null
         try {
@@ -222,10 +223,38 @@ class TableHelper(context: Context){
             val altitude = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.ALTITUDE_COLUMN))
             val lon = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.LONGITUDE_COLUMN))
             val lat = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.LATITUDE_COLUMN))
-            val item = StationItem(stationId,name,city,country,lon,lat,altitude,keyValue)
+            val item = StationItem(stationId, name, city, country, lon, lat, altitude, keyValue)
             return item
         }
         return null
+    }
+
+    fun getUserSubscribedStation(userItem: UserItem) :List<StationItem> {
+        val db = helper.readableDatabase
+        var cursor:Cursor? = null
+        var stationList = ArrayList<StationItem>()
+
+        var userId = getUserId(userItem)
+        if(userId == null) {
+            return stationList
+        }
+
+        try {
+            cursor = db.rawQuery("select * from ${databaseValues.USER_STATION_TABLE} where ${databaseValues.USER_STATION_USER_ID} = ${userId}", null)
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
+
+        if(cursor!!.count > 0) {
+            cursor!!.moveToFirst()
+            do {
+                val id = cursor!!.getInt(cursor!!.getColumnIndex(databaseValues.USER_STATION_STATION_ID))
+                val item = getStation(id)
+                stationList.add(item!!)
+            }while (cursor!!.isAfterLast)
+        }
+        return stationList
     }
 
 }

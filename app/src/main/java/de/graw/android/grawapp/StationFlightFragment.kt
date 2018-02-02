@@ -19,6 +19,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import de.graw.android.grawapp.model.FlightData
+import de.graw.android.grawapp.model.StationItem
 
 
 /**
@@ -36,11 +38,14 @@ class StationFlightFragment : Fragment(),OnMapReadyCallback {
     var mView:View? = null
     var mMap:GoogleMap? = null
     var mMapView:MapView? = null
-    var station :StationItem? = null
+    var station : StationItem? = null
     var flightListView:ListView? = null
 
     var flightList = ArrayList<FlightData>()
     var adapter:FlightAdapter? = null
+
+
+    val flighFragment = FlightOverviewFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +82,21 @@ class StationFlightFragment : Fragment(),OnMapReadyCallback {
         else {
             Log.i("test", "item was null from activity.....")
         }
+
+        flightListView!!.setOnItemClickListener { adapterView, view, position, id ->
+            val item = flightList[position]
+            val bundle = Bundle()
+            bundle.putSerializable("flight",item)
+            flighFragment.arguments = bundle
+            val transAction = fragmentManager.beginTransaction()
+            transAction.replace(R.id.contentArea,flighFragment)
+                    .addToBackStack(null)
+                    .commit()
+            //setTitle("Flight Data")
+        }
     }
 
-    fun getData(station:StationItem) {
+    fun getData(station: StationItem) {
         val database = FirebaseDatabase.getInstance()
         val ref = database.getReference().child("station").child(station.key).child("flights")
 
