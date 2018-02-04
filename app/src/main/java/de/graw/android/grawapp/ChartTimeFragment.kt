@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.devexpress.dxcharts.*
 import com.syncfusion.charts.LineSeries
 import com.syncfusion.charts.NumericalAxis
 import com.syncfusion.charts.SfChart

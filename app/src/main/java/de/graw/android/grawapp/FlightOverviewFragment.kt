@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.storage.FirebaseStorage
 import de.graw.android.grawapp.Fragment.ChartDemoFragment
+import de.graw.android.grawapp.Fragment.ChartSwipeFragment
 import de.graw.android.grawapp.controller.InputDataController
 import de.graw.android.grawapp.model.FlightData
 import org.json.JSONArray
@@ -32,7 +33,7 @@ class FlightOverviewFragment : Fragment() {
     private var mParam1: String? = null
     private var mParam2: String? = null
 
-    var chartFragment = ChartTimeFragment()
+    var chartFragment = ChartSwipeFragment()
     var flightData: FlightData? = null
     var inputDataController:InputDataController? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +89,7 @@ class FlightOverviewFragment : Fragment() {
                     if(inputDataController!!.dataList != null) {
                         val bundle = Bundle()
                         bundle.putSerializable("inputdata",inputDataController!!.dataList as Serializable)
-                        chartFragment = ChartTimeFragment()
+                        chartFragment = ChartSwipeFragment()
                         chartFragment.arguments = bundle
                         val transAction = fragmentManager.beginTransaction()
                         transAction.replace(R.id.pageViewArea,chartFragment)

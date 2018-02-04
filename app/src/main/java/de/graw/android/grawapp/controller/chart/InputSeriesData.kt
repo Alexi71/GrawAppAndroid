@@ -3,12 +3,11 @@ package de.graw.android.grawapp.controller.chart
 import android.provider.BaseColumns
 import android.transition.ChangeTransform
 import android.util.Log
-import com.devexpress.dxcharts.NumericSeriesData
 import com.syncfusion.charts.ChartDataPoint
 import de.graw.android.grawapp.model.InputData
 import org.jetbrains.anko.collections.forEachByIndex
 
-class InputSeriesData(val data: ArrayList<InputData>,val argumentType:ArgumentType,val valueType:ValueType):NumericSeriesData {
+class InputSeriesData(val data: ArrayList<InputData>,val argumentType:ArgumentType,val valueType:ValueType) {
 
     private var inputData:ArrayList<InputData>
     var dataList  = ArrayList<ChartDataPoint<Double,Double>>()
@@ -49,7 +48,7 @@ class InputSeriesData(val data: ArrayList<InputData>,val argumentType:ArgumentTy
 
 
     
-    override fun getArgument(position: Int): Double {
+    /*override fun getArgument(position: Int): Double {
         return dataList.get(position).x
     }
 
@@ -59,7 +58,7 @@ class InputSeriesData(val data: ArrayList<InputData>,val argumentType:ArgumentTy
 
     override fun getDataCount(): Int {
         return dataList.size
-    }
+    }*/
 
 }
 
