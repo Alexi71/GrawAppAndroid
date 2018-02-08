@@ -6,9 +6,11 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -55,6 +57,10 @@ class FlightOverviewFragment : Fragment() {
     var inputDataController:InputDataController? = null
     var frameLayout:FrameLayout? = null
     var dialog:ProgressDialog? = null
+
+    var bottomNavigation:BottomNavigationView? =null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -70,6 +76,18 @@ class FlightOverviewFragment : Fragment() {
         var view = inflater!!.inflate(R.layout.fragment_flight_overview, container, false)
 
         frameLayout = view.findViewById(R.id.pageViewArea)
+        bottomNavigation = view.findViewById(R.id.navigation)
+
+        bottomNavigation!!.setOnNavigationItemSelectedListener (object:BottomNavigationView.OnNavigationItemSelectedListener{
+            override fun onNavigationItemSelected(item: MenuItem): Boolean {
+                Log.i("test","${item.itemId}")
+                return true
+            }
+        })
+
+
+
+
         // Inflate the layout for this fragment
         return view
     }

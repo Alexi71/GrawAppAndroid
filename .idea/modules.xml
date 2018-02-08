@@ -4,7 +4,10 @@
     <modules>
       <module fileurl="file://D:\Eigene Dateien\droid\GrawAppAndroid\GrawApp.iml" filepath="D:\Eigene Dateien\droid\GrawAppAndroid\GrawApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/GrawAppAndroid.iml" filepath="$PROJECT_DIR$/GrawAppAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GrawAppAndroid.iml" filepath="$PROJECT_DIR$/GrawAppAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dxcharts-release/dxcharts-release.iml" filepath="$PROJECT_DIR$/dxcharts-release/dxcharts-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/dxcharts-release/dxcharts-release.iml" filepath="$PROJECT_DIR$/dxcharts-release/dxcharts-release.iml" />
     </modules>
   </component>
