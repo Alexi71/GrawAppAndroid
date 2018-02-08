@@ -16,8 +16,12 @@ class InputSeriesData(val data: ArrayList<InputData>,val argumentType:ArgumentTy
         this.inputData = data
     }
 
-     fun initialize() {
-        this.inputData.forEach {
+     fun initialize(isFiltered:Boolean = false) {
+        var result:List<InputData> = this.inputData
+         if(isFiltered) {
+             result = this.inputData.filter { s-> (s.Time % 600 == 0.0) }
+         }
+        result.forEach {
             dataList.add(ChartDataPoint(getArgument(it,argumentType),getValue(it,valueType)))
         }
          Log.i("test","Chart series init done ${dataList.size}")
@@ -42,7 +46,12 @@ class InputSeriesData(val data: ArrayList<InputData>,val argumentType:ArgumentTy
             ArgumentType.TIME -> return data.Time /60.0
             ArgumentType.PRESSURE -> return data.Pressure
             ArgumentType.GEOPOTENTIAL -> return data.Geopotential
-            else -> return data.Time
+            ArgumentType.DEWPOINT -> return  data.DewPoint
+            ArgumentType.TEMPERATURE -> return  data.Temperature
+            ArgumentType.HUMIDITY -> return  data.Humidity
+            ArgumentType.WINDSPEED -> return data.WindSpeed
+            ArgumentType.WINDDIRECTION -> return data.WindDirection
+            else -> return data.Time/60.0
         }
     }
 
@@ -67,7 +76,7 @@ data class SeriesItem (var argument:Double, var value:Double) {}
 
 
 enum class ArgumentType {
-    TIME,PRESSURE,GEOPOTENTIAL,ALTITUDE
+    TIME,PRESSURE,GEOPOTENTIAL,ALTITUDE,TEMPERATURE,HUMIDITY,WINDSPEED,WINDDIRECTION,DEWPOINT
 }
 
 enum class ValueType {

@@ -1,6 +1,7 @@
 package de.graw.android.grawapp
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
@@ -20,10 +21,14 @@ import de.graw.android.grawapp.model.UserItem
 class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     val fragmentManager = supportFragmentManager
-    val stationListFragment = StationListFragment()
-    val stationFlightFragment = StationFlightFragment()
+    var stationListFragment = StationListFragment()
+    var stationFlightFragment = StationFlightFragment()
     var userItem: UserItem? = null
     var navigationView:NavigationView? = null
+
+    val TAG_STATION = "stationFragment"
+    val TAG_FLIGHTS = "flightFragment"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_application)
@@ -48,16 +53,31 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
         val defaultStation = helper.getDefaultStation(userItem!!)
         addMenuItems()
 
-        if(defaultStation != null ) {
-            openFlightFragment(defaultStation)
+        if(savedInstanceState == null) {
+            if (defaultStation != null) {
+                openFlightFragment(defaultStation)
+            } else {
+                val transAction = fragmentManager.beginTransaction()
+                transAction.replace(R.id.contentArea, stationListFragment,TAG_STATION)
+                        .addToBackStack(null)
+                        .commit()
+                setTitle("Select Station")
+            }
         }
         else {
-            val transAction = fragmentManager.beginTransaction()
-            transAction.replace(R.id.contentArea, stationListFragment)
-                    .addToBackStack(null)
-                    .commit()
-            setTitle("Select Station")
+            if (defaultStation != null) {
+                stationFlightFragment = supportFragmentManager.findFragmentByTag(TAG_FLIGHTS) as StationFlightFragment
+            }
+            else {
+                stationListFragment = supportFragmentManager.findFragmentByTag(TAG_STATION) as StationListFragment
+            }
         }
+
+    }
+
+    override  fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        //getFragmentManager().putFragment(outState,"myFragment",stationFlightFragment)
     }
 
     fun addMenuItems () {
@@ -121,8 +141,8 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
 
         stationFlightFragment!!.arguments = bundle
         val transAction = fragmentManager.beginTransaction()
-        transAction.replace(R.id.contentArea,stationFlightFragment)
-                //.addToBackStack(null)
+        transAction.replace(R.id.contentArea,stationFlightFragment,TAG_FLIGHTS)
+                .addToBackStack(null)
                 .commit()
         setTitle("Flight Data")
     }

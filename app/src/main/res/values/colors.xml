@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="grawRed">#a60202</color>
+    <color name="grawOrange">#d74c01</color>
+    <color name="grawMagenta">#8b033f</color>
+    <color name="grawLightBlue">#095596</color>
+
 </resources>

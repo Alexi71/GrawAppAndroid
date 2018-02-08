@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import de.graw.android.grawapp.dataBase.TableHelper
 import de.graw.android.grawapp.model.UserItem
+import org.jetbrains.anko.indeterminateProgressDialog
 
 
 class MainActivity : AppCompatActivity() {
@@ -131,6 +132,8 @@ class MainActivity : AppCompatActivity() {
     .build()*/
 
     fun setLoginClick() {
+        val dialog = indeterminateProgressDialog("Please wait login in progress")
+        dialog.show()
         mAuth!!.signInWithEmailAndPassword(textEmail!!.text.toString(),
                 textPassword!!.text.toString())
                 .addOnCompleteListener(this, OnCompleteListener<AuthResult> { task ->
@@ -159,7 +162,7 @@ class MainActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show()
                         //updateUI(null)
                     }
-
+                    dialog.dismiss()
                     // ...
                 })
     }

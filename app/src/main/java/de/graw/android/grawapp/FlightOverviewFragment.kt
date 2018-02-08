@@ -1,23 +1,40 @@
 package de.graw.android.grawapp
 
 
+import android.app.Application
+import android.app.ProgressDialog
+import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.google.firebase.storage.FirebaseStorage
+import com.syncfusion.sfbusyindicator.SfBusyIndicator
+import com.syncfusion.sfbusyindicator.enums.AnimationTypes
 import de.graw.android.grawapp.Fragment.ChartDemoFragment
 import de.graw.android.grawapp.Fragment.ChartSwipeFragment
 import de.graw.android.grawapp.controller.InputDataController
+import de.graw.android.grawapp.dataBase.DbFlightDataManager
+import de.graw.android.grawapp.dataBase.TableHelper
 import de.graw.android.grawapp.model.FlightData
+import de.graw.android.grawapp.model.MessageEvent
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.jetbrains.anko.doAsync
 import org.json.JSONArray
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.Serializable
+import org.jetbrains.anko.*
 
 
 /**
@@ -36,6 +53,8 @@ class FlightOverviewFragment : Fragment() {
     var chartFragment = ChartSwipeFragment()
     var flightData: FlightData? = null
     var inputDataController:InputDataController? = null
+    var frameLayout:FrameLayout? = null
+    var dialog:ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -47,31 +66,57 @@ class FlightOverviewFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
+        EventBus.getDefault().register(this)
         var view = inflater!!.inflate(R.layout.fragment_flight_overview, container, false)
 
-
+        frameLayout = view.findViewById(R.id.pageViewArea)
         // Inflate the layout for this fragment
         return view
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        dialog = context.indeterminateProgressDialog ("Hello")
         flightData = arguments.getSerializable("flight") as FlightData
         if(flightData != null) {
+            //check database first if the flight data in local db.....
+
             Log.i("test","Hello from station flight overview ${flightData!!.url}")
-            loadData()
+            /*val busyIndicator = SfBusyIndicator(context)
+            busyIndicator.viewBoxHeight = 100
+            busyIndicator.viewBoxWidth = 100
+            busyIndicator.textColor = Color.RED
+            busyIndicator.animationType = AnimationTypes.SingleCircle
+            frameLayout!!.addView(busyIndicator)*/
+            dialog!!.show()
+            if(!loadFromDb(flightData!!.key)) {
+                loadData()
+            }
+
         }
         else {
             Log.i("test", "item was null from activity.....")
         }
-
-
-
     }
 
+    fun loadFromDb(flightKey:String):Boolean {
+        val db = TableHelper(context)
+        val dataList = db.getFlightData(flightKey)
+        if(dataList.size > 0) {
+            inputDataController = InputDataController()
+            inputDataController!!.dataList = dataList
+            loadFragment()
+            Log.i("test","load from db was sucessfully")
+            return true
+        }
+        return false
+    }
 
     fun loadData()  {
 
@@ -87,14 +132,11 @@ class FlightOverviewFragment : Fragment() {
                     inputDataController!!.getDataFromJson(inputStream)
 
                     if(inputDataController!!.dataList != null) {
-                        val bundle = Bundle()
-                        bundle.putSerializable("inputdata",inputDataController!!.dataList as Serializable)
-                        chartFragment = ChartSwipeFragment()
-                        chartFragment.arguments = bundle
-                        val transAction = fragmentManager.beginTransaction()
-                        transAction.replace(R.id.pageViewArea,chartFragment)
-                                //.addToBackStack(null)
-                                .commit()
+                        doAsync {
+                            val db = TableHelper(context)
+                             db.insertFlightData(inputDataController!!.dataList!!, flightData!!.key)
+                        }
+                        loadFragment()
                     }
 
                    /* val gson = Gson()
@@ -107,7 +149,7 @@ class FlightOverviewFragment : Fragment() {
                     Log.i("test","${result.size}")*/
 
 
-                 /*   async(UI) {
+                   /*async(UI) {
                         var result = bg{convertStreamToString(inputStream)}
                         parseJson( result.await())
                     }*/
@@ -126,6 +168,26 @@ class FlightOverviewFragment : Fragment() {
                     Log.i("test","bytes transfered ${taskSnapshot.bytesTransferred}")
                 }
     }
+
+    private fun loadFragment() {
+        frameLayout!!.removeAllViews()
+        val bundle = Bundle()
+        bundle.putSerializable("inputdata", inputDataController!!.dataList as Serializable)
+        chartFragment = ChartSwipeFragment()
+        chartFragment.arguments = bundle
+        val transAction = fragmentManager.beginTransaction()
+        transAction.replace(R.id.pageViewArea, chartFragment)
+                .addToBackStack(null)
+                .commit()
+
+    }
+
+    @Subscribe
+    fun onChartLoaded(messageEvent: MessageEvent) {
+        Log.i("test","chart loaded")
+        dialog!!.dismiss()
+    }
+
 
     fun parseJson(text:String) {
         Log.i("test", text)

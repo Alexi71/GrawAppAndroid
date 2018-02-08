@@ -11,4 +11,11 @@ data class InputData(var Time:Double,var DisplayTime:String, var Temperature:Dou
                      var LocalOzon:Double,var AirDensity:Double,var RisingSpeed:Double,
                      var VirtualTemperature:Double,var Current:Double,
                      var BoxTemperature:Double,var TotalOzone:Double, var PumpCurrent:Double,
-                     var PumpVoltage:Double):Serializable
+                     var PumpVoltage:Double):Serializable {
+    constructor():this(0.0,"0",0.0,0.0,0.0,0.0,0.0,0.0,
+            0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,
+            0.0,0.0,0.0){
+
+    }
+}
