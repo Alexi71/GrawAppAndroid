@@ -1,10 +1,7 @@
 package de.graw.android.grawapp
 
 
-import android.app.Application
 import android.app.ProgressDialog
-import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -15,18 +12,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.firebase.storage.FirebaseStorage
-import com.syncfusion.sfbusyindicator.SfBusyIndicator
-import com.syncfusion.sfbusyindicator.enums.AnimationTypes
-import de.graw.android.grawapp.Fragment.ChartDemoFragment
 import de.graw.android.grawapp.Fragment.ChartSwipeFragment
+import de.graw.android.grawapp.Fragment.FlightPathFragment
+import de.graw.android.grawapp.Fragment.MessageSwipeFragment
 import de.graw.android.grawapp.controller.InputDataController
-import de.graw.android.grawapp.dataBase.DbFlightDataManager
 import de.graw.android.grawapp.dataBase.TableHelper
 import de.graw.android.grawapp.model.FlightData
 import de.graw.android.grawapp.model.MessageEvent
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.jetbrains.anko.doAsync
@@ -53,6 +45,7 @@ class FlightOverviewFragment : Fragment() {
     private var mParam2: String? = null
 
     var chartFragment = ChartSwipeFragment()
+    var flightPathFragment = FlightPathFragment()
     var flightData: FlightData? = null
     var inputDataController:InputDataController? = null
     var frameLayout:FrameLayout? = null
@@ -80,7 +73,18 @@ class FlightOverviewFragment : Fragment() {
 
         bottomNavigation!!.setOnNavigationItemSelectedListener (object:BottomNavigationView.OnNavigationItemSelectedListener{
             override fun onNavigationItemSelected(item: MenuItem): Boolean {
-                Log.i("test","${item.itemId}")
+                Log.i("test","${item.title}")
+                when(item.itemId){
+                    R.id.action_chart -> {
+                       loadChartFragment()
+                    }
+                    R.id.action_path -> {
+                        loadPathFragment()
+                    }
+                    R.id.action_message -> {
+                        loadMessageFragment()
+                    }
+                }
                 return true
             }
         })
@@ -129,7 +133,7 @@ class FlightOverviewFragment : Fragment() {
         if(dataList.size > 0) {
             inputDataController = InputDataController()
             inputDataController!!.dataList = dataList
-            loadFragment()
+            loadChartFragment()
             Log.i("test","load from db was sucessfully")
             return true
         }
@@ -154,7 +158,7 @@ class FlightOverviewFragment : Fragment() {
                             val db = TableHelper(context)
                              db.insertFlightData(inputDataController!!.dataList!!, flightData!!.key)
                         }
-                        loadFragment()
+                        loadChartFragment()
                     }
 
                    /* val gson = Gson()
@@ -187,7 +191,7 @@ class FlightOverviewFragment : Fragment() {
                 }
     }
 
-    private fun loadFragment() {
+    private fun loadChartFragment() {
         frameLayout!!.removeAllViews()
         val bundle = Bundle()
         bundle.putSerializable("inputdata", inputDataController!!.dataList as Serializable)
@@ -195,7 +199,33 @@ class FlightOverviewFragment : Fragment() {
         chartFragment.arguments = bundle
         val transAction = fragmentManager.beginTransaction()
         transAction.replace(R.id.pageViewArea, chartFragment)
-                .addToBackStack(null)
+                //.addToBackStack(null)
+                .commit()
+
+    }
+
+    private fun loadPathFragment() {
+        frameLayout!!.removeAllViews()
+        val bundle = Bundle()
+        bundle.putSerializable("inputdata", inputDataController!!.dataList as Serializable)
+        flightPathFragment = FlightPathFragment()
+        flightPathFragment.arguments = bundle
+        val transAction = fragmentManager.beginTransaction()
+        transAction.replace(R.id.pageViewArea, flightPathFragment)
+                //.addToBackStack(null)
+                .commit()
+
+    }
+
+    private fun loadMessageFragment() {
+        frameLayout!!.removeAllViews()
+        val bundle = Bundle()
+        bundle.putSerializable("flightData", flightData )
+        val frm = MessageSwipeFragment()
+        frm.arguments = bundle
+        val transAction = fragmentManager.beginTransaction()
+        transAction.replace(R.id.pageViewArea, frm)
+                //.addToBackStack(null)
                 .commit()
 
     }
