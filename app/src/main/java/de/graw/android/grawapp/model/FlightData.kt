@@ -10,7 +10,8 @@ data class FlightData (
     var url:String ,
     var url100:String ,
     var urlEnd:String,
-    var isRealTimeData:Boolean):Serializable
+    var isRealTimeData:Boolean,
+    var epochTime:Double):Serializable
 {
-    constructor():this("","","","","","","",false)
+    constructor():this("","","","","","","",false,0.0)
 }

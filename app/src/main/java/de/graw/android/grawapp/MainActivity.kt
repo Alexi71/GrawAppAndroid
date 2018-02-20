@@ -17,9 +17,13 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import de.graw.android.grawapp.controller.DateItem
 import de.graw.android.grawapp.dataBase.TableHelper
 import de.graw.android.grawapp.model.UserItem
 import org.jetbrains.anko.indeterminateProgressDialog
+import java.text.SimpleDateFormat
+import java.time.DayOfWeek
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -45,6 +49,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val lastDay = DateItem.Companion.getLastDayOfWeek()
+        val firsDay = DateItem.Companion.getFirstDayOfWeek()
+
+        Log.i("test","first day: $firsDay last day: $lastDay")
+
+
         setContentView(R.layout.activity_main)
 
         prefs = this.getSharedPreferences(PREFS_FILENAME,0)
@@ -86,6 +97,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
     private fun googleLogin() {
         Log.i(TAG, "Starting Google LogIn Flow.")
         val signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient)
@@ -110,6 +123,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount) {
         Log.i(TAG, "Authenticating user with firebase.")
+        val dialog = indeterminateProgressDialog(getString(R.string.login_wait))
+        dialog.show()
         val credential = GoogleAuthProvider.getCredential(acct.idToken, null)
         mAuth?.signInWithCredential(credential)?.addOnCompleteListener(this) { task ->
             Log.i(TAG, "Firebase Authentication, is result a success? ${task.isSuccessful}.")
@@ -122,6 +137,8 @@ class MainActivity : AppCompatActivity() {
                 // If sign in fails, display a message to the user.
                 Log.e(TAG, "Authenticating with Google credentials in firebase FAILED !!")
             }
+            val dialog = indeterminateProgressDialog(getString(R.string.login_wait))
+            dialog.dismiss()
         }
     }
 
@@ -132,7 +149,7 @@ class MainActivity : AppCompatActivity() {
     .build()*/
 
     fun setLoginClick() {
-        val dialog = indeterminateProgressDialog("Please wait login in progress")
+        val dialog = indeterminateProgressDialog(getString(R.string.login_wait))
         dialog.show()
         mAuth!!.signInWithEmailAndPassword(textEmail!!.text.toString(),
                 textPassword!!.text.toString())

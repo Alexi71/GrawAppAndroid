@@ -78,11 +78,11 @@ class TableHelper(context: Context) {
             if (count > 0) {
                 //Update station first set all user station as not default
                 try {
-                    var cursor = db.rawQuery("UPDATE ${databaseValues.USER_STATION_TABLE} set ${databaseValues.IS_DEFAULT_COLUMN} = 0", null)
+                    var cursor = db.rawQuery("UPDATE ${databaseValues.USER_STATION_TABLE} set ${databaseValues.IS_DEFAULT_COLUMN} = 0 where ${databaseValues.USER_STATION_USER_ID} = $userId", null)
                     cursor.moveToFirst()
                     cursor.close()
 
-                    cursor = db.rawQuery("UPDATE ${databaseValues.USER_STATION_TABLE} set ${databaseValues.IS_DEFAULT_COLUMN} = 0 where user_id = '${userId}' and station_id = '${stationId}'", null)
+                    cursor = db.rawQuery("UPDATE ${databaseValues.USER_STATION_TABLE} set ${databaseValues.IS_DEFAULT_COLUMN} = 1 where user_id = ${userId} and station_id = ${stationId}", null)
                     cursor.moveToFirst()
                     cursor.close()
                     val id = getUserStationId(userId, stationId)
@@ -160,7 +160,7 @@ class TableHelper(context: Context) {
         val db = helper.readableDatabase
         var cursor: Cursor? = null
         try {
-            cursor = db.rawQuery("select _id from ${databaseValues.USER_STATION_TABLE} where user_id = ${userId} and station_id =${stationId}", null)
+            cursor = db.rawQuery("select _id from ${databaseValues.USER_STATION_TABLE} where user_id = ${userId} and station_id =${stationId} and ${databaseValues.IS_DEFAULT_COLUMN} = 1", null)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -209,6 +209,7 @@ class TableHelper(context: Context) {
 
         if (cursor!!.count > 0) {
             cursor!!.moveToFirst()
+            val id = cursor!!.getInt(cursor!!.getColumnIndex(databaseValues.ID_COLUMN))
             val stationId = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.STATION_ID_COLUMN))
             val name = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.NAME_COLUMN))
             val city = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.CITY_COLUMN))
@@ -217,7 +218,7 @@ class TableHelper(context: Context) {
             val altitude = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.ALTITUDE_COLUMN))
             val lon = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.LONGITUDE_COLUMN))
             val lat = cursor!!.getString(cursor!!.getColumnIndex(databaseValues.LATITUDE_COLUMN))
-            val item = StationItem(stationId, name, city, country, lon, lat, altitude, keyValue)
+            val item = StationItem(stationId, name, city, country, lon, lat, altitude, keyValue,id)
             return item
         }
         return null
@@ -245,7 +246,8 @@ class TableHelper(context: Context) {
                 val id = cursor!!.getInt(cursor!!.getColumnIndex(databaseValues.USER_STATION_STATION_ID))
                 val item = getStation(id)
                 stationList.add(item!!)
-            } while (cursor!!.isAfterLast)
+                cursor!!.moveToNext()
+            } while (!cursor!!.isAfterLast)
         }
         return stationList
     }
@@ -341,6 +343,12 @@ class TableHelper(context: Context) {
 
         }
         return dataList
+    }
+
+    fun deleteFlightData(flightKey:String) {
+        var db = helper.writableDatabase
+        db.execSQL("DELETE FROM ${FlightTable.TABLE_NAME} WHERE ${FlightTable.FLIGHT_ID} = '$flightKey'")
+        db.close()
     }
 
 }

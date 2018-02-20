@@ -3,8 +3,8 @@
     <string name="enter_you_email">enter you email</string>
     <string name="enter_your_password">enter your password</string>
     <string name="button_login">Login</string>
-    <string name="button_or_sign_in">or sign in</string>
-    <string name="sign_in">Sign in</string>
+    <string name="button_or_sign_in">or sign up</string>
+    <string name="sign_in">Sign up</string>
     <string name="title_activity_main_application">MainApplicationActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -26,4 +26,7 @@
     <string name="chart_humidity">Humidity</string>
     <string name="chart_wind_speed">Wind speed</string>
     <string name="chart_pressure_y_title">pressure in [mb]</string>
+    <string name="login_wait">Please wait login in progress</string>
+    <string name="ok_value">OK</string>
+    <string name="cancel_value">Cancel</string>
 </resources>

@@ -87,6 +87,7 @@ class StationListFragment : Fragment() {
                         var station = StationItem()
                         Log.i("test",it.key)
                         val map = it.getValue() as Map<String, Any>
+                        Log.i("test","${map.get("Id") as String}" )
                         station.key = it.key
                         station.city = map.get("City") as String
                         station.country = map.get("Country") as String
@@ -94,6 +95,7 @@ class StationListFragment : Fragment() {
                         station.longitude = map.get("Longitude") as String
                         station.altitude = map.get("Altitude") as String
                         station.name = map.get("Name") as String
+                        station.id = map.get("Id") as String
                         try {
                             tableHelper.saveStation(station)
                         }

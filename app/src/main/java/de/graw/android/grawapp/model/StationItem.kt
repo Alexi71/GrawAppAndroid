@@ -10,9 +10,10 @@ data class StationItem (
     var longitude : String ,
     var latitude : String ,
     var altitude :String ,
-    var key :String ):Serializable {
+    var key :String,
+    var database_id:Int):Serializable {
 
-    constructor() :this("","","","","","","","")
+    constructor() :this("","","","","","","","",-1)
 
 }
 

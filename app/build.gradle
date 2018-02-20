@@ -51,11 +51,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     kapt 'org.greenrobot:eventbus-annotation-processor:3.0.1'
-
     implementation 'com.google.code.gson:gson:2.8.1'
-
+    compile 'net.danlew:android.joda:2.9.9.2'
     compile(name: 'Syncfusion.SfChart.Android', ext: 'aar')
     compile(name: 'Syncfusion.SfBusyIndicator.Android', ext: 'aar')
+    compile 'com.borax12.materialdaterangepicker:library:1.9'
 }
 
 kapt {

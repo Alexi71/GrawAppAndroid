@@ -88,7 +88,7 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
         var stationList = helper.getUserSubscribedStation(userItem!!)
 
         stationList.forEach{
-            var item = menuGroup.add(0,1,1,it.name).setIcon(R.drawable.ic_place_black_24dp)
+            var item = menuGroup.add(0,it.database_id,1,it.name).setIcon(R.drawable.ic_place_black_24dp)
             item.setOnMenuItemClickListener(MenuItem.OnMenuItemClickListener {menuItem ->
                 onMenuItemClick(menuItem)
                 true
@@ -111,10 +111,14 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
 
     fun onMenuItemClick(item: MenuItem): Boolean {
         Log.i("test","${item.itemId}")
-        if (item.title == "hindi") {
-            //do something
-        }
         drawer_layout.closeDrawer(GravityCompat.START)
+        val db = TableHelper(this)
+
+        val station = db.getStation(item.itemId)
+        if(station != null) {
+            openFlightFragment(station)
+        }
+
         return true
     }
 
@@ -138,11 +142,11 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
     private fun openFlightFragment(item: StationItem) {
         val bundle = Bundle()
         bundle.putSerializable("stationItem",item)
-
+        stationFlightFragment = StationFlightFragment()
         stationFlightFragment!!.arguments = bundle
         val transAction = fragmentManager.beginTransaction()
         transAction.replace(R.id.contentArea,stationFlightFragment,TAG_FLIGHTS)
-                .addToBackStack(null)
+                //.addToBackStack(null)
                 .commit()
         setTitle("Flight Data")
     }
@@ -206,6 +210,13 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
             }
             R.id.nav_send -> {
 
+            }
+            R.id.nav_add_station -> {
+                val transAction = fragmentManager.beginTransaction()
+                transAction.replace(R.id.contentArea, stationListFragment,TAG_STATION)
+                        .addToBackStack(null)
+                        .commit()
+                setTitle("Select Station")
             }
         }
 

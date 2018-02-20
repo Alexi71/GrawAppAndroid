@@ -1,6 +1,7 @@
 package de.graw.android.grawapp.Fragment
 
 
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.widget.TextView
 
 import de.graw.android.grawapp.R
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.uiThread
 import java.net.URL
 
@@ -25,7 +27,7 @@ class MessageContentFragment : Fragment() {
     private var mParam1: String? = null
     private var mParam2: String? = null
     private var textView:TextView? = null
-
+    var dialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,16 +48,18 @@ class MessageContentFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val url = arguments.getString("message")
+        dialog = context.indeterminateProgressDialog ("Loading data","Please wait")
         loadData(url)
 
     }
 
     private fun loadData(url:String) {
-
+        dialog!!.show()
         doAsync {
             val text = URL(url).readText()
             uiThread {
                 textView!!.text = text
+                dialog!!.dismiss()
             }
         }
 

@@ -68,7 +68,7 @@ object databaseValues:BaseColumns {
     val STATION_ID_COLUMN = "station_id"
     val IS_DEFAULT_COLUMN = "is_default"
     val USER_STATION_USER_ID = "user_id"
-    val USER_STATION_STATION_ID = "user_id"
-    val DATABASE_VERSION = 3
+    val USER_STATION_STATION_ID = "station_id"
+    val DATABASE_VERSION = 4
 
 }
