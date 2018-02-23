@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.graw.android.grawapp.Fragment.RawContainerFragment">
+
+    <!-- <android.support.design.widget.TabLayout
+         android:id="@+id/RawTab"
+         android:layout_width="match_parent"
+         android:layout_height="?attr/actionBarSize"
+         android:background="@color/colorPrimary"
+         app:tabIndicatorColor="@color/mdtp_white"
+         app:tabTextColor="@color/mdtp_white"
+         app:tabSelectedTextColor="@color/mdtp_white"/> -->
+
+    <include
+        android:id="@+id/status_header"
+        layout="@layout/raw_header_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v4.view.ViewPager
+         android:id="@+id/RawPageView"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@id/status_header" />
+
+
+
+ </RelativeLayout>

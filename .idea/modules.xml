@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GrawApp.iml" filepath="$PROJECT_DIR$/GrawApp.iml" />
+      <module fileurl="file://D:\Eigene Dateien\droid\GrawAppAndroid\GrawApp.iml" filepath="D:\Eigene Dateien\droid\GrawAppAndroid\GrawApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/GrawAppAndroid.iml" filepath="$PROJECT_DIR$/GrawAppAndroid.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dxcharts-release/dxcharts-release.iml" filepath="$PROJECT_DIR$/dxcharts-release/dxcharts-release.iml" />
     </modules>

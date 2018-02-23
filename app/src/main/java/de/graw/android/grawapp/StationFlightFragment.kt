@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import de.graw.android.grawapp.Fragment.RawContainerFragment
 import de.graw.android.grawapp.callback.SwipeToDeleteCallback
 import de.graw.android.grawapp.dataBase.TableHelper
 import de.graw.android.grawapp.helper.Settings.Settings
@@ -31,6 +32,7 @@ import de.graw.android.grawapp.model.FlightData
 import de.graw.android.grawapp.model.StationItem
 import de.graw.android.grawapp.model.interfaces.OnItemClickListener
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.bundleOf
 import org.joda.time.DateTime
 import java.util.*
 
@@ -156,9 +158,12 @@ class StationFlightFragment : Fragment(),OnMapReadyCallback,OnItemClickListener,
        // )
 
             val dpd =DatePickerDialog.newInstance(this,
-                    now.get(Calendar.YEAR),
-                    now.get(Calendar.MONTH),
-                    now.get(Calendar.DAY_OF_MONTH))
+                    firstDay!!.year,
+                    firstDay!!.monthOfYear-1,
+                    firstDay!!.dayOfMonth,
+                    lastDay!!.year,
+                    lastDay!!.monthOfYear-1,
+                    lastDay!!.dayOfMonth)
             dpd.accentColor = getColor(context, R.color.grawOrange)
 
             dpd.isAutoHighlight = true
@@ -181,6 +186,15 @@ class StationFlightFragment : Fragment(),OnMapReadyCallback,OnItemClickListener,
     override fun onItemClick(item: FlightData) {
         Log.i("test","${item.url}")
         if(item.isRealTimeData) {
+            val bundle = Bundle()
+            bundle.putString("stationkey",station!!.key)
+            bundle.putString("flightkey",item.key)
+            val fragment = RawContainerFragment()
+            fragment.arguments = bundle
+            val transAction = fragmentManager.beginTransaction()
+            transAction.replace(R.id.contentArea,fragment)
+                    .addToBackStack(null)
+                    .commit()
             return
         }
         val bundle = Bundle()
@@ -328,7 +342,7 @@ class StationFlightFragment : Fragment(),OnMapReadyCallback,OnItemClickListener,
             }
 
         }
-        ref.addValueEventListener(listener)
+        //ref.addValueEventListener(listener)
 
         val childListener = object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError?) {
@@ -343,81 +357,86 @@ class StationFlightFragment : Fragment(),OnMapReadyCallback,OnItemClickListener,
                 Log.i("test","snapshot changed")
             }
 
-            override fun onChildAdded(p0: DataSnapshot?, p1: String?) {
-                Log.i("test","snapshot added")
+            override fun onChildAdded(data: DataSnapshot?, p1: String?) {
+                Log.i("test", "snapshot added ${data!!.key}")
+
+                if (data?.exists()) {
+                    //val hasChildren = data.hasChildren()
+                    //adapter!!.clearItems()
+
+
+
+                    var item = getFlightDataFromSnapshot(data)
+                   /* item.key = data!!.key
+                    item.time = map.get("Time") as String
+                    item.date = map.get("Date") as String
+                    item.fileName = map.get("FileName") as String
+
+                    if (map.containsKey("IsRealTimeDataAvailable")) {
+                        item.isRealTimeData = map.get("IsRealTimeDataAvailable") as Boolean
+                    }
+                    if (map.containsKey("Url")) {
+                        item.url = map.get("Url") as String
+                    }
+                    if (map.containsKey("UrlEnd")) {
+                        item.urlEnd = map.get("UrlEnd") as String
+                    }
+                    if (map.containsKey("Url100")) {
+                        item.url100 = map.get("Url100") as String
+                    }
+                    if (map.containsKey("EpochTime")) {
+                        item.epochTime = map.get("EpochTime") as Double
+                        val dateTime = DateTime(item.epochTime.toLong() * 1000L)
+                        Log.i("test", dateTime.toString())
+                        val epoch = dateTime.millis / 1000
+                        Log.i("test", "from db: ${item.epochTime} from calc: ${epoch}")
+                    }*/
+                    adapter?.addItem(item)
+                }
             }
 
-            override fun onChildRemoved(p0: DataSnapshot?) {
+
+            override fun onChildRemoved(data: DataSnapshot?) {
                 Log.i("test","snapshot removed")
+                var item = getFlightDataFromSnapshot(data!!)
+                adapter!!.removeItem(item)
             }
 
         }
         ref.addChildEventListener(childListener)
     }
 
-    fun getRawData(station: StationItem) {
-        val database = FirebaseDatabase.getInstance()
-        val ref = database.getReference().child("station").child(station.key).child("flights")
+    private fun getFlightDataFromSnapshot(data:DataSnapshot):FlightData {
+        val map = data.getValue() as Map<String, Any>
+        var item = FlightData()
+        item.key = data!!.key
+        item.time = map.get("Time") as String
+        item.date = map.get("Date") as String
+        item.fileName = map.get("FileName") as String
 
-        val listener = object : ValueEventListener {
-
-            override fun onCancelled(p0: DatabaseError?) {
-
-            }
-
-            override fun onDataChange(data: DataSnapshot?) {
-                if(data!!.exists()) {
-                    val children = data.children
-                    //adapter!!.clearItems()
-                    children.forEach {
-                        var item = FlightData()
-                        Log.i("flight test",it.key)
-                        val map = it.getValue() as Map<String, Any>
-                        item.key = it.key
-                        item.time = map.get("Time") as String
-                        item.date = map.get("Date") as String
-                        item.fileName =   map.get("FileName") as String
-
-                        if(map.containsKey("IsRealTimeDataAvailable")) {
-                            item.isRealTimeData = map.get("IsRealTimeDataAvailable") as Boolean
-                        }
-                        if(map.containsKey("Url")) {
-                            item.url = map.get("Url") as String
-                        }
-                        if(map.containsKey("UrlEnd")) {
-                            item.urlEnd = map.get("UrlEnd") as String
-                        }
-                        if(map.containsKey("Url100")) {
-                            item.url100 = map.get("Url100") as String
-                        }
-                        if(map.containsKey("EpochTime")) {
-                            item.epochTime = map.get("EpochTime") as Double
-                            val dateTime = DateTime (item.epochTime.toLong() * 1000L)
-                            Log.i("test",dateTime.toString())
-                            val epoch = dateTime.millis /1000
-                            Log.i("test","from db: ${item.epochTime} from calc: ${epoch}")
-                        }
-                        // flightList.add(item)
-                        if(item.isRealTimeData) {
-                            adapter?.insertItemAtFirst(item)
-                        }
-
-                    }
-
-                    /* for(i in data.children) {
-                         val key = i.child("key").value as String
-                         Log.i("test","key: ${key}")
-
-                        /* val item = i.getValue<StationItem>(StationItem::class.java)
-                         Log.i("test","received from db ${item!!.city}")*/
- 12
-                     }*/
-                }
-            }
-
+        if (map.containsKey("IsRealTimeDataAvailable")) {
+            item.isRealTimeData = map.get("IsRealTimeDataAvailable") as Boolean
         }
-        ref.addValueEventListener(listener)
+        if (map.containsKey("Url")) {
+            item.url = map.get("Url") as String
+        }
+        if (map.containsKey("UrlEnd")) {
+            item.urlEnd = map.get("UrlEnd") as String
+        }
+        if (map.containsKey("Url100")) {
+            item.url100 = map.get("Url100") as String
+        }
+        if (map.containsKey("EpochTime")) {
+            item.epochTime = map.get("EpochTime") as Double
+            val dateTime = DateTime(item.epochTime.toLong() * 1000L)
+            Log.i("test", dateTime.toString())
+            val epoch = dateTime.millis / 1000
+            Log.i("test", "from db: ${item.epochTime} from calc: ${epoch}")
+        }
+        return item
     }
+
+
 
     companion object {
         // TODO: Rename parameter arguments, choose names that match
@@ -486,18 +505,33 @@ class FlightRecyclerAdapter(val items:ArrayList<FlightData>, listener:OnItemClic
     }
 
     fun addItem(item:FlightData) {
+        if(item.isRealTimeData){
+            insertItemAtFirst(item)
+            return
+        }
         items.add(item)
         notifyItemInserted(items.size)
     }
 
     fun insertItemAtFirst(item:FlightData) {
         items.add(0,item)
-        notifyItemInserted(items.size)
+        notifyDataSetChanged()
+        //notifyItemInserted(items.size)
     }
     fun removeItem(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
     }
+
+    fun removeItem(item:FlightData) {
+        val itemInList = items.firstOrNull { s-> (s.key == item.key) }
+
+        if(itemInList != null) {
+           val index = items.indexOf(itemInList)
+           removeItem(index)
+        }
+    }
+
     fun clearItems() {
         items.clear()
         notifyDataSetChanged()
@@ -518,6 +552,10 @@ class HolderAnswer(itemView:View,listener:OnItemClickListener):RecyclerView.View
         if(item.isRealTimeData) {
             data.setTextColor(getColor(itemView.context, R.color.grawOrange))
             time.setTextColor(getColor(itemView.context, R.color.grawOrange))
+        }
+        else {
+            data.setTextColor(getColor(itemView.context, R.color.mdtp_light_gray))
+            time.setTextColor(getColor(itemView.context, R.color.mdtp_light_gray))
         }
         itemView.setOnClickListener {
             Log.i("test","content clicked ${item.key}")

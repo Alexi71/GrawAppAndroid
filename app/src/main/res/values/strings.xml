@@ -29,4 +29,7 @@
     <string name="login_wait">Please wait login in progress</string>
     <string name="ok_value">OK</string>
     <string name="cancel_value">Cancel</string>
+    <string name="raw_sensor">SENSOR</string>
+    <string name="raw_telemtry">TELEMTRY</string>
+    <string name="raw_gps">GPS</string>
 </resources>

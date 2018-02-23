@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/grawDarkGray">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:id="@+id/raw_start_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Start time: 23:00:00 UTC"
+                    android:textColor="@color/mdtp_background_color" />
+
+                <TextView
+                    android:id="@+id/raw_last_time_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Last Update: 23:04:00 UTC"
+                    android:textColor="@color/mdtp_background_color" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingTop="20dp"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/raw_image_gps"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/g5_status_32x32_gruen" />
+
+                    <TextView
+                        android:id="@+id/textViewRawStatusGps"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/raw_image_gps"
+                        android:layout_alignLeft="@+id/raw_image_gps"
+                        android:layout_alignRight="@+id/raw_image_gps"
+                        android:layout_alignTop="@+id/raw_image_gps"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/raw_gps"
+                        android:textAlignment="center"
+                        android:textColor="@color/mdtp_background_color" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/raw_image_sensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/g5_status_32x32_gelb" />
+
+                    <TextView
+                        android:id="@+id/textViewRawStatusSensor"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/raw_image_sensor"
+                        android:layout_alignLeft="@+id/raw_image_sensor"
+                        android:layout_alignRight="@+id/raw_image_sensor"
+                        android:layout_alignTop="@+id/raw_image_sensor"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/raw_sensor"
+                        android:textAlignment="center"
+                        android:textColor="@color/mdtp_background_color" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/raw_image_telemetry"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:contentDescription="test"
+                        android:labelFor="@+id/eee"
+                        app:srcCompat="@drawable/g5_status_32x32_gruen" />
+
+                    <TextView
+                        android:id="@+id/textViewRawStatusTelemetry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@+id/raw_image_telemetry"
+                        android:layout_alignLeft="@+id/raw_image_telemetry"
+                        android:layout_alignRight="@+id/raw_image_telemetry"
+                        android:layout_alignTop="@+id/raw_image_telemetry"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="@string/raw_telemtry"
+                        android:textAlignment="center"
+                        android:textColor="@color/mdtp_background_color" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</FrameLayout>
