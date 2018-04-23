@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.view.ViewPager
+import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,9 @@ import de.graw.android.grawapp.controller.Firebase.FirebaseSnapshotListener
 import de.graw.android.grawapp.model.RawData
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import android.view.KeyEvent.KEYCODE_BACK
+
+
 
 
 
@@ -27,7 +32,7 @@ import org.joda.time.format.DateTimeFormat
  * Use the [RawContainerFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RawContainerFragment : Fragment(),FirebaseSnapshotListener {
+class RawContainerFragment : Fragment() {
 
 
     // TODO: Rename and change types of parameters
@@ -46,7 +51,8 @@ class RawContainerFragment : Fragment(),FirebaseSnapshotListener {
     private var stationKey:String? = null
     private var flightKey:String? = null
     private var fireBaseHelper:FirebaseHelper? = null
-
+    private var startDetected:Boolean = false
+    private var dataListener:FirebaseSnapshotListener? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
@@ -81,18 +87,69 @@ class RawContainerFragment : Fragment(),FirebaseSnapshotListener {
 
         stationKey = arguments.getString("stationkey")
         flightKey = arguments.getString("flightkey")
+
+        dataListener = object :FirebaseSnapshotListener{
+            override fun onSetData(data: RawData) {
+                setData(data)
+            }
+        }
         if(stationKey != null && flightKey != null) {
-           fireBaseHelper = FirebaseHelper(this)
+           fireBaseHelper = FirebaseHelper(dataListener)
             fireBaseHelper?.startRawDataListener(stationKey!!,flightKey!!)
         }
         val adpater = PageRawSwipeAdpater(fragmentManager,fireBaseHelper!!)
         pageView?.adapter = adpater
     }
 
-    override fun onSetData(data: RawData) {
+     fun setData(data: RawData) {
+         Log.i("test","Raw container gets data")
         val dateTime = DateTime (data.epochTime.toLong() * 1000L)
         val dateDecoder = DateTimeFormat.forPattern("HH:mm:ss")
-        textViewLastTimeUpdate?.setText("${dateTime.toString(dateDecoder)}")
+        textViewLastTimeUpdate?.setText("Last update: ${dateTime.toString(dateDecoder)}")
+        sensorImage?.setImageResource(setImage(data.sensorStatus))
+        telemetryImage?.setImageResource(setImage(data.telemetryStatus))
+        gpsImage?.setImageResource(setImage(data.gpsStatus))
+        if(data.startDetected && !startDetected) {
+            val date = DateTime(data.startTime.toLong()*1000L)
+            textViewStartTime?.setText("Start time: ${date.toString(dateDecoder)}")
+            startDetected = true
+        }
+        else if (!data.startDetected && !startDetected) {
+            textViewStartTime?.setText("Start time: ---")
+        }
+
+    }
+
+    private fun setImage(value:Long):Int {
+
+        when (value) {
+            0L-> return R.drawable.g5_status_32x32_gruen
+            1L-> return R.drawable.g5_status_32x32_rot
+            2L->return R.drawable.g5_status_32x32_grau
+            else -> return R.drawable.g5_status_32x32_grau
+        }
+    }
+
+    override  fun onResume() {
+        super.onResume()
+        if(view == null) {
+            return
+        }
+
+        view!!.isFocusableInTouchMode = true
+        view!!.requestFocus()
+
+        view!!.setOnKeyListener(object : View.OnKeyListener {
+            override fun onKey(v: View, keyCode: Int, event: KeyEvent): Boolean {
+                Log.i("test","${event.action}  $keyCode")
+                if (event.action === KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+                    Log.i("test","action here!")
+                    fireBaseHelper?.removeListener(dataListener!!)
+                    fireBaseHelper?.stopRawDataListener()
+                }
+               return false
+            }
+        })
     }
 
     companion object {

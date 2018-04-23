@@ -14,6 +14,7 @@ import de.graw.android.grawapp.R
 import de.graw.android.grawapp.controller.Firebase.FirebaseHelper
 import de.graw.android.grawapp.controller.Firebase.FirebaseSnapshotListener
 import de.graw.android.grawapp.model.RawData
+import java.text.DecimalFormat
 
 
 /**
@@ -100,11 +101,20 @@ class RawValueFragment() : Fragment() {
         dataListener  = object:FirebaseSnapshotListener {
             override fun onSetData(data: RawData) {
                 Log.i("test","data time ${data.epochTime}")
+                val formatter = DecimalFormat("#")
+                textViewPressueValue!!.setText("%.1f".format(data.pressure))
+                textViewTemperatureValue!!.setText("%.1f".format(data.temperature))
+                textViewHumdityValue!!.setText(formatter.format(data.humdity))
+                textViewWindspeedValue!!.setText("%.1f".format(data.windspeed))
+
             }
 
         }
 
         firebaseHelper = arguments.getSerializable("firebase") as FirebaseHelper
+
+
+
        // firebaseHelper!!.addListener(dataListener!!)
 
     }

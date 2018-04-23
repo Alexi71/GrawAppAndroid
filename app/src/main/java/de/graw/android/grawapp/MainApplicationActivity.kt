@@ -167,6 +167,8 @@ class MainApplicationActivity : AppCompatActivity(), NavigationView.OnNavigation
 
 
     override fun onBackPressed() {
+        //val count = getFragmentManager().backStackEntryCount
+
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {

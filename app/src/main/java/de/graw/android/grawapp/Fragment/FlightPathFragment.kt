@@ -56,6 +56,8 @@ class FlightPathFragment : Fragment(), OnMapReadyCallback {
             mMapView?.onResume()
             mMapView?.getMapAsync(this)
         }
+
+
     }
     override fun onMapReady(p0: GoogleMap?) {
         MapsInitializer.initialize(context)

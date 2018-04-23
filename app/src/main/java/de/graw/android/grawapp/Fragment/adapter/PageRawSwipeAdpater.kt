@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
-import de.graw.android.grawapp.Fragment.FlightPathFragment
-import de.graw.android.grawapp.Fragment.MessageContentFragment
-import de.graw.android.grawapp.Fragment.RawMapFragment
-import de.graw.android.grawapp.Fragment.RawValueFragment
+import de.graw.android.grawapp.Fragment.*
 import de.graw.android.grawapp.controller.Firebase.FirebaseHelper
 import de.graw.android.grawapp.model.FlightData
 
@@ -28,21 +25,29 @@ class PageRawSwipeAdpater(fm: FragmentManager?,firebaseHelper: FirebaseHelper) :
                 val fragment = RawValueFragment()
                 val bundle = Bundle()
                 bundle.putSerializable("firebase",firebaseHelper)
+                //bundle.putSerializable("listener",firebaseHelper!)
                 fragment.arguments = bundle
                 return fragment
             }
             1-> {
                 val fragment = RawMapFragment()
-                /* val bundle = Bundle()
-                bundle.putString("message",flightData.url100)
-                fragment.arguments = bundle*/
+                val bundle = Bundle()
+                bundle.putSerializable("firebase",firebaseHelper)
+                fragment.arguments = bundle
+                return fragment
+            }
+            2-> {
+                val fragment = RawTimeChart()
+                val bundle = Bundle()
+                bundle.putSerializable("firebase",firebaseHelper)
+                fragment.arguments = bundle
                 return fragment
             }
             else -> {
                 val fragment = RawValueFragment()
-                /* val bundle = Bundle()
-                bundle.putString("message",flightData.url100)
-                fragment.arguments = bundle*/
+                val bundle = Bundle()
+                bundle.putSerializable("firebase",firebaseHelper)
+                fragment.arguments = bundle
                 return fragment
             }
 
@@ -50,7 +55,7 @@ class PageRawSwipeAdpater(fm: FragmentManager?,firebaseHelper: FirebaseHelper) :
     }
 
     override fun getCount(): Int {
-        return 2
+        return 3
     }
 
    /* override fun getPageTitle(position: Int): CharSequence {
